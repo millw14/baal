@@ -1,0 +1,42 @@
+==========================================
+MONGODB SETUP - COPY TO .env.local
+==========================================
+
+Add this line to your .env.local file:
+
+MONGODB_URI=mongodb+srv://milla:555wetip@baal.mzltwm.mongodb.net/?appName=baal
+
+Your complete .env.local should contain:
+
+NEXT_PUBLIC_PRIVY_APP_ID=cmjfmcsgj0255ky0c8xkwzmlz
+MONGODB_URI=mongodb+srv://milla:555wetip@baal.mzltwm.mongodb.net/?appName=baal
+
+==========================================
+QUICK START:
+==========================================
+
+1. Open your .env.local file
+2. Add the MONGODB_URI line above
+3. Save the file
+4. Restart your dev server: npm run dev
+5. Sign in with Privy - user will be automatically saved to MongoDB!
+
+==========================================
+WHAT GETS STORED:
+==========================================
+
+- privyId (unique identifier)
+- email
+- username (optional)
+- wallets (Solana wallet addresses)
+- profilePicture (optional)
+- bio (optional)
+- lastLoginAt (timestamp)
+- verified status
+- onboardingCompleted status
+- preferences (theme, notifications)
+- stats (jobs posted/completed, spending/earnings)
+- createdAt/updatedAt (automatic timestamps)
+
+==========================================
+
