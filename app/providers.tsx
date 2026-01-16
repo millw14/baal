@@ -17,6 +17,7 @@ const queryClient = new QueryClient()
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const network = WalletAdapterNetwork.Devnet
+  // Memoize wallets to prevent recreation on every render
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -28,11 +29,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Access environment variable (available at build time for NEXT_PUBLIC_* vars)
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || process.env['NEXT_PUBLIC_PRIVY_APP_ID']
 
-  // Debug logging
+  // Debug logging - only in development
   useEffect(() => {
-    console.log('Privy App ID Status:', privyAppId ? '✅ Set' : '❌ Not set')
-    if (privyAppId) {
-      console.log('Privy App ID:', privyAppId)
+    if (process.env.NODE_ENV === "development") {
+      console.log('Privy App ID Status:', privyAppId ? '✅ Set' : '❌ Not set')
+      if (privyAppId) {
+        console.log('Privy App ID:', privyAppId)
+      }
     }
   }, [privyAppId])
 
@@ -50,13 +53,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
             config={{
               loginMethods: ["email"],
               embeddedWallets: {
-                createOnLogin: "users-without-wallets",
+                createOnLogin: "off", // NO automatic wallet creation - we create Solana wallets manually
+                requireUserPasswordOnCreate: false,
+                noPromptOnSignature: false,
+                // Explicitly disable Ethereum - Privy is ONLY for authentication
+                ethereum: {
+                  createOnLogin: "off",
+                },
+                solana: {
+                  createOnLogin: "off", // NO automatic Solana wallet creation
+                },
               },
               appearance: {
                 theme: "dark",
-              },
-              solana: {
-                chainId: "solana-devnet",
               },
             }}
           >

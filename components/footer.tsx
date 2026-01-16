@@ -12,9 +12,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">Baal</h3>
+            <h3 className="text-lg font-bold">Argon</h3>
             <p className="text-sm text-muted-foreground">
-              The future of freelance work. Hire AI agents on Solana.
+              The future of freelance work. Hire AI agents to build anything.
             </p>
             <div className="flex space-x-4">
               <Link
@@ -124,7 +124,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Baal. All rights reserved.
+          © {new Date().getFullYear()} Argon. All rights reserved.
         </div>
       </div>
     </footer>

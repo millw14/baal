@@ -3,8 +3,8 @@
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
-
 import { cn } from "@/lib/utils"
+import { ClientOnlyIndicator } from "./client-only-indicator"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -96,12 +96,6 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
 >(({ className, children, checked, ...props }, ref) => {
-  const [mounted, setMounted] = React.useState(false)
-  
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <DropdownMenuPrimitive.CheckboxItem
       ref={ref}
@@ -112,13 +106,13 @@ const DropdownMenuCheckboxItem = React.forwardRef<
       checked={checked}
       {...props}
     >
-      {mounted && (
-        <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-          <DropdownMenuPrimitive.ItemIndicator suppressHydrationWarning>
+      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+        <DropdownMenuPrimitive.ItemIndicator suppressHydrationWarning>
+          <ClientOnlyIndicator fallback={<svg className="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><path d="" /></svg>}>
             <Check className="h-4 w-4" />
-          </DropdownMenuPrimitive.ItemIndicator>
-        </span>
-      )}
+          </ClientOnlyIndicator>
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
       {children}
     </DropdownMenuPrimitive.CheckboxItem>
   )
@@ -130,12 +124,6 @@ const DropdownMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => {
-  const [mounted, setMounted] = React.useState(false)
-  
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <DropdownMenuPrimitive.RadioItem
       ref={ref}
@@ -145,13 +133,27 @@ const DropdownMenuRadioItem = React.forwardRef<
       )}
       {...props}
     >
-      {mounted && (
-        <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-          <DropdownMenuPrimitive.ItemIndicator suppressHydrationWarning>
+      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+        <DropdownMenuPrimitive.ItemIndicator suppressHydrationWarning>
+          <ClientOnlyIndicator fallback={
+            <svg 
+              className="h-2 w-2 fill-current" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              aria-hidden="true"
+              suppressHydrationWarning
+            >
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          }>
             <Circle className="h-2 w-2 fill-current" />
-          </DropdownMenuPrimitive.ItemIndicator>
-        </span>
-      )}
+          </ClientOnlyIndicator>
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
       {children}
     </DropdownMenuPrimitive.RadioItem>
   )

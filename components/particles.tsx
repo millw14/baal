@@ -17,7 +17,7 @@ export function ParticlesBackground() {
       options={{
         particles: {
           number: {
-            value: 50,
+            value: 30, // Reduced from 50 for better performance
             density: {
               enable: true,
               value_area: 800,
@@ -39,9 +39,9 @@ export function ParticlesBackground() {
           },
           line_linked: {
             enable: true,
-            distance: 150,
+            distance: 120, // Reduced distance for better performance
             color: "#6366f1",
-            opacity: 0.2,
+            opacity: 0.15, // Slightly reduced opacity
             width: 1,
           },
           move: {

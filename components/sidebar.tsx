@@ -5,8 +5,8 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
-import { usePrivy, useWallets } from "@privy-io/react-auth"
-import { usePathname } from "next/navigation"
+import { usePrivy } from "@privy-io/react-auth"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   Grid3x3, 
   LayoutDashboard,
@@ -19,7 +19,6 @@ import {
   Moon,
   Menu,
   X,
-  Search,
   LucideIcon
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -63,24 +62,66 @@ const navItems: NavItem[] = [
 export function Sidebar() {
   const { theme, setTheme } = useTheme()
   const { ready, authenticated, login, logout, user } = usePrivy()
-  const { wallets } = useWallets()
   const { toast } = useToast()
   const pathname = usePathname()
-  
-  // Debug: Log Privy state
-  useEffect(() => {
-    console.log("Privy State:", { ready, authenticated, user: user?.id })
-    if (!ready) {
-      console.log("⚠️ Privy is not ready yet. Check for initialization errors above.")
-    }
-  }, [ready, authenticated, user])
+  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [walletAddress, setWalletAddress] = useState<string>("")
+  
+  // Debug: Log Privy state - only in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("Privy State:", { ready, authenticated, user: user?.id })
+      if (!ready) {
+        console.log("⚠️ Privy is not ready yet. Check for initialization errors above.")
+      }
+    }
+  }, [ready, authenticated, user])
 
-  // Get Solana wallet address from Privy embedded wallet
-  const solanaWallet = wallets.find((w) => w.walletClientType === "privy" && (w.chainId === "solana:devnet" || w.chainId === "solana"))
-  const walletAddress = solanaWallet?.address || ""
+  // Fetch user data to get managed wallet address - memoized to prevent unnecessary calls
+  useEffect(() => {
+    if (!ready || !authenticated || !user?.id) {
+      setWalletAddress("")
+      return
+    }
+
+    let cancelled = false
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`/api/auth/user?privyId=${user.id}`)
+        if (cancelled) return
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (cancelled) return
+          
+          // Get managed wallet address from database
+          const managedWallet = data.user?.wallets?.find((w: any) => w.walletType === "managed")
+          if (managedWallet?.address) {
+            setWalletAddress(managedWallet.address)
+          } else {
+            setWalletAddress("")
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Error fetching user data:", error)
+          setWalletAddress("")
+        }
+      }
+    }
+
+    // Debounce the fetch slightly to avoid rapid calls
+    const timeoutId = setTimeout(fetchUserData, 100)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timeoutId)
+    }
+  }, [ready, authenticated, user?.id])
 
   const handleCopyAddress = async () => {
     if (walletAddress) {
@@ -93,10 +134,6 @@ export function Sidebar() {
       setTimeout(() => setCopied(false), 2000)
     }
   }
-
-  const shortenedAddress = walletAddress
-    ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`
-    : ""
 
   // Auto-collapse on mobile
   useEffect(() => {
@@ -136,36 +173,39 @@ export function Sidebar() {
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
             />
 
-            {/* Sidebar */}
+            {/* Sidebar - Hidden on mobile */}
             <motion.aside
               initial={{ x: -320, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed left-0 top-0 h-screen w-80 bg-black/95 backdrop-blur-xl border-r border-white/10 z-40 flex flex-col"
+              className="hidden md:flex fixed left-0 top-0 h-screen w-80 bg-black/95 backdrop-blur-xl border-r border-white/10 z-40 flex-col"
             >
               {/* Logo */}
               <div className="p-6 border-b border-white/10">
-                <Link href="/" className="flex items-center space-x-2">
+                <Link href="/" className="flex items-center space-x-3">
+                  <motion.div
+                    className="relative h-10 w-10 flex-shrink-0"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Image
+                      src="/logo.svg"
+                      alt="Argon Logo"
+                      fill
+                      className="object-contain"
+                      sizes="40px"
+                      priority
+                    />
+                  </motion.div>
                   <motion.span
                     className="text-2xl font-bold text-white"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    Baal
+                    Argon
                   </motion.span>
                 </Link>
-              </div>
-
-              {/* Search */}
-              <div className="p-4 border-b border-white/10">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
-                  <Input
-                    placeholder="Search gigs..."
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/50 focus:border-white/30"
-                  />
-                </div>
               </div>
 
               {/* Navigation */}
@@ -263,47 +303,21 @@ export function Sidebar() {
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
-                        <Dialog open={depositModalOpen} onOpenChange={setDepositModalOpen}>
-                          <DialogTrigger asChild>
-                            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start bg-white/5 border-white/20 text-white hover:bg-white/10"
-                              >
-                                <Wallet className="mr-3 h-5 w-5" />
-                                <span className="flex-1 text-left">{shortenedAddress}</span>
-                              </Button>
-                            </motion.div>
-                          </DialogTrigger>
-                          <DialogContent className="bg-black/95 border-white/20 text-white">
-                            <DialogHeader>
-                              <DialogTitle className="text-white">Fund Your Wallet</DialogTitle>
-                              <DialogDescription className="text-white/70">
-                                Send SOL or USDC to this address
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="flex flex-col items-center space-y-4 py-4">
-                              <QRCodeSVG value={walletAddress} size={200} />
-                              <div className="flex items-center space-x-2">
-                                <code className="px-3 py-2 bg-white/10 rounded text-sm text-white">
-                                  {walletAddress}
-                                </code>
-                                <Button
-                                  variant="outline"
-                                  size="icon"
-                                  onClick={handleCopyAddress}
-                                  className="border-white/20 hover:bg-white/10"
-                                >
-                                  {copied ? (
-                                    <span className="text-green-400">✓</span>
-                                  ) : (
-                                    <span className="text-white">📋</span>
-                                  )}
-                                </Button>
-                              </div>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                          <Button
+                            variant="outline"
+                            onClick={handleCopyAddress}
+                            className="w-full justify-start bg-white/5 border-white/20 text-white hover:bg-white/10"
+                          >
+                            <Wallet className="mr-3 h-5 w-5" />
+                            <span className="flex-1 text-left font-mono text-xs truncate">{walletAddress}</span>
+                            {copied ? (
+                              <span className="text-green-400 text-xs">✓</span>
+                            ) : (
+                              <span className="text-white/50 text-xs">📋</span>
+                            )}
+                          </Button>
+                        </motion.div>
                       </motion.div>
                     ) : (
                       <motion.div
@@ -416,7 +430,10 @@ export function Sidebar() {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator className="bg-white/10" />
                       <DropdownMenuItem
-                        onClick={logout}
+                        onClick={async () => {
+                          await logout()
+                          router.push("/")
+                        }}
                         className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                       >
                         <LogOut className="mr-2 h-4 w-4" />

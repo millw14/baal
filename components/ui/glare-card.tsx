@@ -69,7 +69,7 @@ export const GlareCard = ({
   return (
     <div
       style={containerStyle}
-      className="relative isolate [contain:layout_style] [perspective:600px] transition-transform duration-[var(--duration)] ease-[var(--easing)] delay-[var(--delay)] will-change-transform w-full [aspect-ratio:17/21]"
+      className="relative isolate [contain:layout_style] [perspective:600px] transition-transform [transition-duration:var(--duration)] [transition-timing-function:var(--easing)] [transition-delay:var(--delay)] will-change-transform w-full [aspect-ratio:17/21]"
       ref={refElement}
       onPointerMove={(event) => {
         const rotateFactor = 0.4
@@ -118,13 +118,13 @@ export const GlareCard = ({
         }
       }}
     >
-      <div className="h-full grid will-change-transform origin-center transition-transform duration-[var(--duration)] ease-[var(--easing)] delay-[var(--delay)] [transform:rotateY(var(--r-x))_rotateX(var(--r-y))] rounded-[var(--radius)] border border-purple-500/30 hover:border-purple-500/60 hover:[--opacity:0.7] hover:[--duration:200ms] hover:[--easing:linear] hover:filter-none overflow-hidden bg-black/60 backdrop-blur-sm">
+      <div className="h-full grid will-change-transform origin-center transition-transform [transition-duration:var(--duration)] [transition-timing-function:var(--easing)] [transition-delay:var(--delay)] [transform:rotateY(var(--r-x))_rotateX(var(--r-y))] rounded-[var(--radius)] border border-purple-500/30 hover:border-purple-500/60 hover:[--opacity:0.7] hover:[--duration:200ms] hover:[--easing:linear] hover:filter-none overflow-hidden bg-black/60 backdrop-blur-sm">
         <div className="w-full h-full grid [grid-area:1/1] mix-blend-soft-light [clip-path:inset(0_0_0_0_round_var(--radius))]">
           <div className={cn("h-full w-full bg-transparent", className)}>
             {children}
           </div>
         </div>
-        <div className="w-full h-full grid [grid-area:1/1] mix-blend-soft-light [clip-path:inset(0_0_1px_0_round_var(--radius))] opacity-[var(--opacity)] transition-opacity transition-background duration-[var(--duration)] ease-[var(--easing)] delay-[var(--delay)] will-change-background [background:radial-gradient(farthest-corner_circle_at_var(--m-x)_var(--m-y),_rgba(147,51,234,0.8)_10%,_rgba(99,102,241,0.65)_20%,_rgba(168,85,247,0)_90%)]" />
+        <div className="w-full h-full grid [grid-area:1/1] mix-blend-soft-light [clip-path:inset(0_0_1px_0_round_var(--radius))] opacity-[var(--opacity)] transition-opacity transition-background [transition-duration:var(--duration)] [transition-timing-function:var(--easing)] [transition-delay:var(--delay)] will-change-background [background:radial-gradient(farthest-corner_circle_at_var(--m-x)_var(--m-y),_rgba(147,51,234,0.8)_10%,_rgba(99,102,241,0.65)_20%,_rgba(168,85,247,0)_90%)]" />
         <div
           className="w-full h-full grid [grid-area:1/1] mix-blend-color-dodge opacity-[var(--opacity)] will-change-background transition-opacity [clip-path:inset(0_0_1px_0_round_var(--radius))] [background-blend-mode:hue_hue_hue_overlay] [background:var(--pattern),_var(--rainbow),_var(--diagonal),_var(--shade)] relative after:content-[''] after:grid-area-[inherit] after:bg-repeat-[inherit] after:bg-attachment-[inherit] after:bg-origin-[inherit] after:bg-clip-[inherit] after:bg-[inherit] after:mix-blend-exclusion after:[background-size:var(--foil-size),_200%_400%,_800%,_200%] after:[background-position:center,_0%_var(--bg-y),_calc(var(--bg-x)*_-1)_calc(var(--bg-y)*_-1),_var(--bg-x)_var(--bg-y)] after:[background-blend-mode:soft-light,_hue,_hard-light]"
           style={{ ...backgroundStyle }}

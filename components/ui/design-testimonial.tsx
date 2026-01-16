@@ -15,7 +15,7 @@ interface TestimonialProps {
 
 const defaultTestimonials = [
   {
-    quote: "Baal transformed our entire creative process overnight.",
+    quote: "Argon transformed our entire creative process overnight.",
     author: "Sarah Chen",
     role: "Design Director",
     company: "Linear",

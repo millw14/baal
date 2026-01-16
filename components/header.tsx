@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { useTheme } from "next-themes"
 import { usePrivy } from "@privy-io/react-auth"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { useRouter } from "next/navigation"
 import { 
   Sun, 
   Moon, 
@@ -48,6 +49,7 @@ export function Header() {
   const { ready, authenticated, login, logout, user } = usePrivy()
   const { publicKey, wallet } = useWallet()
   const { toast } = useToast()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -85,7 +87,7 @@ export function Header() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            Baal
+            Argon
           </motion.span>
         </Link>
 
@@ -247,7 +249,10 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={async () => {
+                  await logout()
+                  router.push("/")
+                }}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>

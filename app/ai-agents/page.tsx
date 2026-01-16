@@ -96,7 +96,7 @@ export default function AIAgentsPage() {
 
   return (
     <PageWrapper>
-      <div className="container py-10 px-4 max-w-7xl mx-auto relative z-10">
+      <div className="container py-6 md:py-10 px-4 pb-24 md:pb-10 max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -5,6 +5,7 @@ import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
 import { Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { ClientOnlyIndicator } from "./client-only-indicator"
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -24,12 +25,6 @@ const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
 >(({ className, ...props }, ref) => {
-  const [mounted, setMounted] = React.useState(false)
-  
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
@@ -39,11 +34,28 @@ const RadioGroupItem = React.forwardRef<
       )}
       {...props}
     >
-      {mounted && (
-        <RadioGroupPrimitive.Indicator className="flex items-center justify-center" suppressHydrationWarning>
+      <RadioGroupPrimitive.Indicator 
+        className="flex items-center justify-center" 
+        suppressHydrationWarning
+      >
+        <ClientOnlyIndicator fallback={
+          <svg 
+            className="h-2.5 w-2.5 fill-current text-current" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            aria-hidden="true"
+            suppressHydrationWarning
+          >
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+        }>
           <Circle className="h-2.5 w-2.5 fill-current text-current" />
-        </RadioGroupPrimitive.Indicator>
-      )}
+        </ClientOnlyIndicator>
+      </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )
 })

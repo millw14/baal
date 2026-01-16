@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@solana/wallet-adapter-react-ui/styles.css';
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -61,6 +63,11 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Mobile safe area support */
+  .h-safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom, 0px);
   }
 }
 

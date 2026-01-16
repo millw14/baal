@@ -103,8 +103,13 @@ const UserSchema: Schema = new Schema(
         },
         walletType: {
           type: String,
-          enum: ["embedded", "external"],
-          default: "embedded",
+          enum: ["managed", "external"], // "managed" = our generated wallets, "external" = Phantom/Solflare
+          default: "managed",
+        },
+        // Encrypted private key (only for managed wallets)
+        encryptedSecretKey: {
+          type: String,
+          required: false, // Only required for managed wallets
         },
       },
     ],
@@ -214,9 +219,8 @@ const UserSchema: Schema = new Schema(
   }
 )
 
-// Create indexes
+// Create indexes (privyId index is already defined in schema with unique: true and index: true)
 UserSchema.index({ email: 1 })
-UserSchema.index({ privyId: 1 }, { unique: true })
 UserSchema.index({ "wallets.address": 1 })
 
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema)

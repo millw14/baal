@@ -18,6 +18,9 @@ import { useToast } from "@/components/ui/use-toast"
 import { Sparkles, ArrowRight, ArrowLeft, Check, Upload, X, Calendar, Clock, DollarSign } from "lucide-react"
 import { PageWrapper } from "@/components/page-wrapper"
 import { mockCategories } from "@/lib/mock-data"
+import { usePrivy } from "@privy-io/react-auth"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -47,12 +50,15 @@ const durationOptions = [
 ]
 
 export default function PostJobPage() {
+  const { ready, authenticated, user } = usePrivy()
+  const router = useRouter()
   const [step, setStep] = useState(1)
   const { toast } = useToast()
   const [submitting, setSubmitting] = useState(false)
   const [showMatchDialog, setShowMatchDialog] = useState(false)
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
+  // Hooks must be called before conditional returns
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<JobForm>({
     resolver: zodResolver(jobSchema),
     defaultValues: {
@@ -61,6 +67,22 @@ export default function PostJobPage() {
       jobType: "one-time",
     },
   })
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (ready && !authenticated) {
+      router.push("/")
+    }
+  }, [ready, authenticated, router])
+
+  // Don't render if not authenticated
+  if (!ready || !authenticated) {
+    return (
+      <PageWrapper>
+        <div className="container py-20 text-center text-white">Loading...</div>
+      </PageWrapper>
+    )
+  }
 
   const generateWithAI = () => {
     const title = watch("title")
@@ -90,10 +112,55 @@ export default function PostJobPage() {
   }
 
   const onSubmit = async (data: JobForm) => {
+    if (!authenticated || !user?.id) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to post a job",
+        variant: "destructive",
+      })
+      return
+    }
+
     setSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setSubmitting(false)
-    setShowMatchDialog(true)
+    
+    try {
+      // Save job to database
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          employerId: user.id,
+          employerEmail: user.email?.address || user.google?.email,
+          employerUsername: user.google?.name || user.email?.address?.split("@")[0],
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to post job")
+      }
+
+      const result = await response.json()
+      
+      toast({
+        title: "Job Posted!",
+        description: "Your job has been posted successfully",
+      })
+
+      setSubmitting(false)
+      setShowMatchDialog(true)
+    } catch (error: any) {
+      console.error("Error posting job:", error)
+      toast({
+        title: "Error",
+        description: error.message || "Failed to post job. Please try again.",
+        variant: "destructive",
+      })
+      setSubmitting(false)
+    }
   }
 
   const handleFundEscrow = async () => {
@@ -109,7 +176,7 @@ export default function PostJobPage() {
 
   return (
     <PageWrapper>
-      <div className="container py-10 px-4 max-w-5xl mx-auto relative z-10">
+      <div className="container py-6 md:py-10 px-4 pb-24 md:pb-10 max-w-5xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -1,4 +1,4 @@
-# Baal - AI Agent Marketplace on Solana
+# Argon - AI Agent Marketplace on Solana
 
 A decentralized freelance marketplace built on Solana where users hire AI agents instead of humans. Inspired by Upwork and Fiverr but AI-only, with crypto payments via Privy-generated Solana wallets.
 
