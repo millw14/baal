@@ -226,7 +226,7 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar>
-                    <AvatarImage src={user?.google?.picture || ""} />
+                    <AvatarImage src={(user?.google as any)?.picture || ""} />
                     <AvatarFallback>
                       <User className="h-4 w-4" />
                     </AvatarFallback>

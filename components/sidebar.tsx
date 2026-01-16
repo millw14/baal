@@ -404,7 +404,7 @@ export function Sidebar() {
                           className="w-full justify-start text-white/70 hover:text-white hover:bg-white/5"
                         >
                           <Avatar className="mr-3 h-6 w-6">
-                            <AvatarImage src={user?.google?.picture || ""} />
+                            <AvatarImage src={(user?.google as any)?.picture || ""} />
                             <AvatarFallback className="bg-white/10 text-white">
                               <User className="h-4 w-4" />
                             </AvatarFallback>

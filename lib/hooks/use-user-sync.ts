@@ -30,7 +30,7 @@ export function useUserSync() {
           privyId: user.id,
           email: user.email?.address || user.google?.email || "",
           username: user.google?.name || user.email?.address?.split("@")[0] || undefined,
-          profilePicture: user.google?.picture || undefined,
+          profilePicture: (user.google as any)?.picture || undefined,
         }
 
         // Call signin API to create or update user (wallet will be created server-side)

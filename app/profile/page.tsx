@@ -214,7 +214,7 @@ export default function ProfilePage() {
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-6">
                     <Avatar className="h-24 w-24 border-2 border-white/20">
-                      <AvatarImage src={userData?.profilePicture || user?.google?.picture || ""} />
+                      <AvatarImage src={userData?.profilePicture || (user?.google as any)?.picture || ""} />
                       <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-500 text-white text-2xl">
                         {userData?.username?.charAt(0).toUpperCase() || user?.google?.name?.charAt(0).toUpperCase() || "U"}
                       </AvatarFallback>

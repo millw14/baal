@@ -9,6 +9,7 @@ import { AnimationMixer } from "three"
 function ScrollControlledModel({ url, scrollProgress }: { url: string; scrollProgress: number }) {
   const { scene, animations } = useGLTF(url)
   const mixerRef = useRef<AnimationMixer | null>(null)
+  const actionsRef = useRef<THREE.AnimationAction[]>([])
   const groupRef = useRef<THREE.Group>(null)
   const clockRef = useRef(new THREE.Clock())
   const scrollProgressRef = useRef(scrollProgress)
@@ -30,10 +31,11 @@ function ScrollControlledModel({ url, scrollProgress }: { url: string; scrollPro
   useEffect(() => {
     if (animations && animations.length > 0) {
       mixerRef.current = new AnimationMixer(scene)
-      animations.forEach((clip) => {
+      actionsRef.current = animations.map((clip) => {
         const action = mixerRef.current!.clipAction(clip)
         action.weight = 0
         action.play()
+        return action
       })
     }
   }, [animations, scene])
@@ -45,10 +47,9 @@ function ScrollControlledModel({ url, scrollProgress }: { url: string; scrollPro
       mixerRef.current.update(clockRef.current.getDelta())
       
       // Change animation based on scroll progress
-      if (animations && animations.length > 0 && mixerRef.current) {
-        const actions = mixerRef.current.clipActions
-        const animIndex = Math.floor((currentScroll % 1) * animations.length) % animations.length
-        actions.forEach((action, index) => {
+      if (actionsRef.current.length > 0) {
+        const animIndex = Math.floor((currentScroll % 1) * actionsRef.current.length) % actionsRef.current.length
+        actionsRef.current.forEach((action, index) => {
           action.weight = index === animIndex ? 1 : 0
           action.timeScale = 0.5 + currentScroll * 0.5
         })

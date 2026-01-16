@@ -158,7 +158,7 @@ export function ParticleSphere() {
   return (
     <group ref={groupRef}>
       {particles.map((particle, index) => (
-        <mesh key={index} position={particle.position} scale={particle.scale}>
+        <mesh key={index} position={particle.position as unknown as [number, number, number]} scale={particle.scale as unknown as [number, number, number]}>
           <sphereGeometry args={[1, 8, 6]} />
           <meshBasicMaterial color={particle.color} transparent opacity={PARTICLE_OPACITY} />
         </mesh>
@@ -168,7 +168,7 @@ export function ParticleSphere() {
         const texture = textures[image.textureIndex]
         
         return (
-          <mesh key={`image-${index}`} position={image.position} rotation={image.rotation}>
+          <mesh key={`image-${index}`} position={image.position as unknown as [number, number, number]} rotation={image.rotation as unknown as [number, number, number]}>
             <planeGeometry args={[IMAGE_SIZE, IMAGE_SIZE]} />
             {texture ? (
               <meshBasicMaterial 

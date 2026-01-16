@@ -56,13 +56,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 createOnLogin: "off", // NO automatic wallet creation - we create Solana wallets manually
                 requireUserPasswordOnCreate: false,
                 noPromptOnSignature: false,
-                // Explicitly disable Ethereum - Privy is ONLY for authentication
-                ethereum: {
-                  createOnLogin: "off",
-                },
-                solana: {
-                  createOnLogin: "off", // NO automatic Solana wallet creation
-                },
               },
               appearance: {
                 theme: "dark",

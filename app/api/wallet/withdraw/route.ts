@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import connectDB from "@/lib/mongodb"
 import User from "@/lib/models/User"
+import TransactionModel from "@/lib/models/Transaction"
 import { Connection, PublicKey, Transaction, SystemProgram, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js"
 import { reconstructKeypair } from "@/lib/utils/solana-wallet"
 
@@ -100,8 +101,7 @@ export async function POST(request: NextRequest) {
       )
 
       // Create transaction record in database
-      const Transaction = (await import("@/lib/models/Transaction")).default
-      await Transaction.create({
+      await TransactionModel.create({
         userId: user.privyId,
         walletAddress: managedWallet.address,
         fromAddress: managedWallet.address,

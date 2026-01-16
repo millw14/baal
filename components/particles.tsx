@@ -12,15 +12,15 @@ export function ParticlesBackground() {
 
   return (
     <Particles
-      id="tsparticles"
-      init={particlesInit}
-      options={{
+      {...({
+        id: "tsparticles",
+        init: particlesInit,
+        options: {
         particles: {
           number: {
             value: 30, // Reduced from 50 for better performance
             density: {
               enable: true,
-              value_area: 800,
             },
           },
           color: {
@@ -79,9 +79,10 @@ export function ParticlesBackground() {
             },
           },
         },
-        retina_detect: true,
-      }}
-      className="absolute inset-0 -z-10"
+          retina_detect: true,
+        },
+        className: "absolute inset-0 -z-10",
+      } as any)}
     />
   )
 }

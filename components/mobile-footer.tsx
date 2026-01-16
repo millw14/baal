@@ -176,7 +176,7 @@ export function MobileFooter() {
                       className="h-8 w-8 p-0 border-white/20 hover:bg-white/10"
                     >
                       <Avatar className="h-6 w-6 border border-white/20">
-                        <AvatarImage src={user?.google?.picture || ""} />
+                        <AvatarImage src={(user?.google as any)?.picture || ""} />
                         <AvatarFallback className="bg-purple-500/20 text-purple-400">
                           <User className="h-3 w-3" />
                         </AvatarFallback>
