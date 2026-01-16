@@ -75,7 +75,12 @@ export async function POST(request: NextRequest) {
       console.log("🔧 Creating new user with managed Solana wallet...")
       const walletData = createSolanaWallet()
       
-      const userWallets = [
+      const userWallets: Array<{
+        address: string
+        chainType: string
+        walletType: string
+        encryptedSecretKey?: string
+      }> = [
         {
           address: walletData.publicKey,
           chainType: "solana",
