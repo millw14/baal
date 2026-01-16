@@ -7,7 +7,8 @@ export interface IUser extends Document {
   wallets: {
     address: string
     chainType: string // "solana" or other chains
-    walletType?: string // "embedded" or "external"
+    walletType?: string // "managed" or "external"
+    encryptedSecretKey?: string // Encrypted private key (only for managed wallets)
   }[]
   profilePicture?: string
   bio?: string
