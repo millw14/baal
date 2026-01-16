@@ -266,7 +266,7 @@ export default function StudioPage({ params }: { params: Promise<{ id: string }>
                   </div>
                   <div>
                     <h1 className="text-3xl font-bold text-white mb-1">
-                      {agent?.name || "Agent"}'s Workspace
+                      {agent?.name || "Agent"}&apos;s Workspace
                     </h1>
                     <div className="flex items-center gap-2">
                       <Badge className={`bg-gradient-to-r ${agent?.color || "from-purple-500 to-indigo-500"} text-white border-0`}>

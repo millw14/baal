@@ -64,7 +64,7 @@ export default function ClearSessionPage() {
             <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-lg p-4">
               <p className="text-yellow-400 text-sm">
                 ⚠️ <strong>Warning:</strong> This will log you out and clear your local session data. 
-                You'll need to log in again with a new email or the same email to test fresh wallet creation.
+                You&apos;ll need to log in again with a new email or the same email to test fresh wallet creation.
               </p>
             </div>
             
@@ -85,8 +85,8 @@ export default function ClearSessionPage() {
                 <strong>Note:</strong>
               </p>
               <p className="text-white/60 text-sm">
-                If you want to completely remove a user from Privy's database (not just your local session), 
-                you'll need to delete them from the{' '}
+                If you want to completely remove a user from Privy&apos;s database (not just your local session), 
+                you&apos;ll need to delete them from the{' '}
                 <a 
                   href="https://dashboard.privy.io" 
                   target="_blank" 
