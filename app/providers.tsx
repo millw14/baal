@@ -6,21 +6,22 @@ import { PrivyProvider } from "@privy-io/react-auth"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react"
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
-import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
+import { SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { useMemo, useEffect } from "react"
 import { Toaster } from "@/components/ui/toaster"
 import { UserSyncProvider } from "./user-sync-provider"
 
 // Wallet adapter CSS is imported via @import in globals.css
+// Note: Phantom is now a Standard Wallet and doesn't need explicit adapter
 
 const queryClient = new QueryClient()
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const network = WalletAdapterNetwork.Devnet
   // Memoize wallets to prevent recreation on every render
+  // Phantom is automatically detected as a Standard Wallet
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
     ],
     []
@@ -60,6 +61,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
               appearance: {
                 theme: "dark",
               },
+              // Note: Add your production domain (e.g., baal.vercel.app) to Privy Dashboard
+              // under App Settings > Security > Allowed Origins to fix CSP/iframe errors
             }}
           >
             <ConnectionProvider endpoint={`https://api.devnet.solana.com`}>
